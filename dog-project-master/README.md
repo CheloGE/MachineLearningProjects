@@ -7,11 +7,17 @@
 
 The following steps were followed to setup the environment for the development of the project:
 ```
-## An AWS EC2 instance for deep-learning was used to speed up the training process, the following line allows to access the instances from a remote computer
+## An AWS EC2 instance for deep-learning was used to speed up the training process, the following line allows to access the instances from a remote computer:
 ssh -i privateKey.pem ubuntu@Public_DNS(IPv4)
+
+
+## Clone the repository where the project will take place:
+git clone https://github.com/CheloGE/MachineLearningProjects.git
+
+
 ## Open jupyter notebook:
 jupyter notebook --ip=Public_DNS(IPv4) --no-browser
-git clone https://github.com/CheloGE/MachineLearningProjects.git
+
 
 ## download the dog dataset
 mkdir dogImages
