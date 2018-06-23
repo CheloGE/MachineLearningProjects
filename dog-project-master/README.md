@@ -4,7 +4,27 @@
 [image2]: ./images/vgg16_model.png "VGG-16 Model Keras Layers"
 [image3]: ./images/vgg16_model_draw.png "VGG16 Model Figure"
 
+```
+ssh -i privateKey.pem ubuntu@Public_DNS(IPv4)
 
+git clone https://github.com/udacity/dog-project.git
+
+## download the dog dataset
+mkdir dogImages
+cd dogImages
+wget https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip
+
+## download the human dataset
+mkdir lfw
+cd lfw
+wget https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/lfw.zip
+
+## download the VGG-16 and Xception bottleneck features
+mkdir bottleneck_features
+cd bottleneck_features
+wget https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/DogVGG16Data.npz
+wget https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/DogXceptionData.npz
+```
 ## Project Overview
 
 Welcome to the Convolutional Neural Networks (CNN) project in the AI Nanodegree! In this project, you will learn how to build a pipeline that can be used within a web or mobile app to process real-world, user-supplied images.  Given an image of a dog, your algorithm will identify an estimate of the canine’s breed.  If supplied an image of a human, the code will identify the resembling dog breed.  
