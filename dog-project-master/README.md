@@ -10,28 +10,24 @@ The following steps were followed to setup the environment for the development o
 ## An AWS EC2 instance for deep-learning was used to speed up the training process, the following line allows to access the instances from a remote computer:
 ssh -i privateKey.pem ubuntu@Public_DNS(IPv4)
 
-
 ## Clone the repository where the project will take place:
 git clone https://github.com/CheloGE/MachineLearningProjects.git
-
 
 ## Open jupyter notebook:
 jupyter notebook --ip=Public_DNS(IPv4) --no-browser
 
-
 ## download the dog dataset
-mkdir dogImages
-cd dogImages
+mkdir path_to_the_project/dogImages
+cd path_to_the_project/dogImages
 wget https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip
 
 ## download the human dataset
-mkdir lfw
-cd lfw
+mkdir path_to_the_project/lfw
+cd path_to_the_project/lfw
 wget https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/lfw.zip
 
 ## download the VGG-16 and Xception bottleneck features
-mkdir bottleneck_features
-cd bottleneck_features
+cd path_to_the_project/bottleneck_features
 wget https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/DogVGG16Data.npz
 wget https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/DogXceptionData.npz
 ```
