@@ -3,11 +3,13 @@
 [image1]: ./images/sample_dog_output.png "Sample Output"
 [image2]: ./images/vgg16_model.png "VGG-16 Model Keras Layers"
 [image3]: ./images/vgg16_model_draw.png "VGG16 Model Figure"
+## Deep learning project
 
+The following steps were followed to setup the environment for the development of the project:
 ```
 ssh -i privateKey.pem ubuntu@Public_DNS(IPv4)
 
-git clone https://github.com/udacity/dog-project.git
+git clone https://github.com/CheloGE/MachineLearningProjects.git
 
 ## download the dog dataset
 mkdir dogImages
