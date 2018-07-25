@@ -33,9 +33,9 @@ class DDPG():
         self.actor_target.model.set_weights(self.actor_local.model.get_weights())
 
         # Noise process
-        self.exploration_mu = 0
+        self.exploration_mu = 0.0#0
         self.exploration_theta = 0.15
-        self.exploration_sigma = 0.2
+        self.exploration_sigma = 0.1#0.2
         self.noise = OUNoise(self.action_size, self.exploration_mu, self.exploration_theta, self.exploration_sigma)
 
         # Replay memory
@@ -44,8 +44,8 @@ class DDPG():
         self.memory = ReplayBuffer(self.buffer_size, self.batch_size)
 
         # Algorithm parameters
-        self.gamma = 0.99  # discount factor
-        self.tau = 0.01  # for soft update of target parameters
+        self.gamma = 0.95#0.99  # discount factor
+        self.tau = 1e-3#0.01  # for soft update of target parameters
 
         #Initialize scorer
         self.score = 0.0
@@ -150,19 +150,33 @@ class Actor:
         # Define input layer (states)
         states = layers.Input(shape=(self.state_size,), name='states')
 
-        # Add hidden layers
-        #net = layers.Dense(units=32, activation='relu')(states)
-        #net = layers.Dense(units=64, activation='relu')(net)
-        #net = layers.Dense(units=32, activation='relu')(net)
-        net = layers.Dense(units=300, activation='relu')(states)
-        net = layers.Dense(units=400, activation='relu')(net)
-        net = layers.Dense(units=200, activation='relu')(net)
-
+        '''# Add hidden layers
+        net = layers.Dense(units=32, activation='relu')(states)
+        net = layers.Dense(units=64, activation='relu')(net)
+        net = layers.Dense(units=32, activation='relu')(net)
+        
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
 
         # Add final output layer with sigmoid activation
         raw_actions = layers.Dense(units=self.action_size, activation='sigmoid',
             name='raw_actions')(net)
+        '''
+        ###################################
+        # Add hidden layers
+        net = layers.Dense(units=400,kernel_regularizer=regularizers.l2(1e-6))(states)
+        net = layers.BatchNormalization()(net)
+        net = layers.LeakyReLU(1e-2)(net)
+        net = layers.Dense(units=300,kernel_regularizer=regularizers.l2(1e-6))(net)
+        net = layers.BatchNormalization()(net)
+        net = layers.LeakyReLU(1e-2)(net)
+        
+        # Add final output layer with sigmoid activation
+        raw_actions = layers.Dense(units=self.action_size, activation='sigmoid',
+            name='raw_actions',kernel_initializer=initializers.RandomUniform(minval=-0.003, maxval=0.003))(net)
+        #######################################
+        
+
+        
 
         # Scale [0, 1] output for each action dimension to proper range
         actions = layers.Lambda(lambda x: (x * self.action_range) + self.action_low,
@@ -178,7 +192,7 @@ class Actor:
         # Incorporate any additional losses here (e.g. from regularizers)
 
         # Define optimizer and training function
-        optimizer = optimizers.Adam()
+        optimizer = optimizers.Adam(lr=1e-6)
         updates_op = optimizer.get_updates(params=self.model.trainable_weights, loss=loss)
         self.train_fn = K.function(
             inputs=[self.model.input, action_gradients, K.learning_phase()],
@@ -208,35 +222,52 @@ class Critic:
         # Define input layers
         states = layers.Input(shape=(self.state_size,), name='states')
         actions = layers.Input(shape=(self.action_size,), name='actions')
-
+        '''
         # Add hidden layer(s) for state pathway
-        #net_states = layers.Dense(units=32, activation='relu')(states)
-        #net_states = layers.Dense(units=64, activation='relu')(net_states)
-        net_states = layers.Dense(units=300, activation='relu')(states)
-        net_states = layers.Dense(units=400, activation='relu')(net_states)
+        net_states = layers.Dense(units=32, activation='relu')(states)
+        net_states = layers.Dense(units=64, activation='relu')(net_states)
+
 
         # Add hidden layer(s) for action pathway
-        #net_actions = layers.Dense(units=32, activation='relu')(actions)
-        #net_actions = layers.Dense(units=64, activation='relu')(net_actions)
-        net_actions = layers.Dense(units=300, activation='relu')(actions)
-        net_actions = layers.Dense(units=400, activation='relu')(net_actions)
+        net_actions = layers.Dense(units=32, activation='relu')(actions)
+        net_actions = layers.Dense(units=64, activation='relu')(net_actions)
+        '''
+        ######################################
+        # Add hidden layer(s) for state pathway
+        net_states = layers.Dense(units=400,kernel_regularizer=regularizers.l2(1e-6))(states)
+        net_states = layers.BatchNormalization()(net_states)
+        net_states = layers.LeakyReLU(1e-2)(net_states)
+
+        net_states = layers.Dense(units=300, kernel_regularizer=regularizers.l2(1e-6))(net_states)
+        net_states = layers.LeakyReLU(1e-2)(net_states)
+
+        # Add hidden layer(s) for action pathway
+        net_actions = layers.Dense(units=300,kernel_regularizer=regularizers.l2(1e-6))(actions)
+        net_actions = layers.LeakyReLU(1e-2)(net_actions)
+        ######################################
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
 
         # Combine state and action pathways
         net = layers.Add()([net_states, net_actions])
-        net = layers.Activation('relu')(net)
+        ###net = layers.Activation('relu')(net)
+        net = layers.LeakyReLU(1e-2)(net)#borrar este
 
         # Add more layers to the combined network if needed
-
+        '''
         # Add final output layer to prduce action values (Q values)
         Q_values = layers.Dense(units=1, name='q_values')(net)
-
+        '''
+        ###############################
+        # Add final output layer to prduce action values (Q values)
+        Q_values = layers.Dense(units=1, name='q_values',kernel_initializer=initializers.RandomUniform(minval=-0.003, maxval=0.003))(net)
+        #################################
+        
         # Create Keras model
         self.model = models.Model(inputs=[states, actions], outputs=Q_values)
 
         # Define optimizer and compile model for training with built-in loss function
-        optimizer = optimizers.Adam()
+        optimizer = optimizers.Adam(lr=1e-6)
         self.model.compile(optimizer=optimizer, loss='mse')
 
         # Compute action gradients (derivative of Q values w.r.t. to actions)
@@ -259,6 +290,7 @@ class OUNoise:
 
     def reset(self):
         """Reset the internal state (= noise) to mean (mu)."""
+        self.sigma = max((1-0.002) * self.sigma, 0.01)
         self.state = copy.copy(self.mu)
 
     def sample(self):
