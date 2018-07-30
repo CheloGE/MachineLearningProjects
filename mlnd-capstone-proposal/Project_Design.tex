@@ -1,0 +1,42 @@
+In this section, an explanation of the programming language, libraries and the selected algorithm to tackle the problem is given.
+\subsection{Programming Language and Libraries}
+    \begin{itemize}
+    \item \textbf{Python 3.}
+    \item \textbf{Scikit-learn}. Open source machine learning library for Python.
+    \item \textbf{Keras.} Open source neural network library written in Python. It is capable of
+    running on top of either Tensorflow or Theano.
+    \item \textbf{TensorFlow.} Open source software libraries for deep learning.
+    \item \textbf{OpenAI gym.} Open source framework for testing reinforcement learning projects
+    \end{itemize}
+    
+\subsection{Deep Q Learning algorithm}
+As stated in \href{https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf}{DeepMind's paper} the algorithm for the DQN should have the following structure:
+\begin{itemize}
+\item Initialize replay Memory with capacity N
+\item Initialize Main Q-network weights $W$ with random uniform distribution.
+\item Initialize Target Q-network weights with the main Q-network weights. $W^-\leftarrow W$
+\item \textbf{For} the episode in maximum number of (Episodes):
+\begin{itemize}
+\item Reset environment
+\item Prepare initial state: $S$
+\item \textbf{For} time step t in maximum number of (Steps):
+\begin{itemize}
+\item[] \underline{\textbf{Observation stage (sample to memory)}}
+\item Act in the environment based on state $S$ and get action $A$ using an epsilon-greedy algorithm
+\item Take action $A$ and make an environment action-step, get from the output of the environment the new state $S'$ and reward $R$
+\item Store the tuple ($S,A,R,S'$) in memory
+\item update state. $S \leftarrow S'$
+\item[] \underline{\textbf{Learning stage }}\textbf{\dots} 
+\item Obtain random mini-batch of tuples from memory. list of ($S,A,R,S'$).
+\item Use Target Q-Network to predict the target $Q$ for Main Q-Network for each tuple of the mini-batch. 
+
+$\hat{Q}$=predict($S$)
+
+$\hat{Q}[A]=R+\gamma argMax_a(Q[S',W^-])$
+\item Update weights in the Main Q-Network based on the target $\hat{Q}$ as follows: 
+
+$\Delta W=\alpha (Q-\hat{Q}) \nabla_W(\hat{Q})$
+\item Update Target Q-network weights with the Main Q-network weights every C steps. $W^-\leftarrow W$
+\end{itemize}
+\end{itemize}
+\end{itemize}
