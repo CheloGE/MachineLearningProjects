@@ -1,0 +1,4 @@
+As explained in \hyperref[sec:problem-statement]{Section
+\ref*{sec:problem-statement}} The problem's best candidate is a Deep Q Network, which will have a Circular Memory (Deque) or a tree Memory(sum-tree) in case a prioritize Memory is required. Since the initial state is different in each iteration it may require a tweak of the state obtained from the environment before processing it to the deep network. 
+
+The deep Q network will be in charge of getting the best function to map the state input to one of the three actions, that is seeking for the optimal policy.
