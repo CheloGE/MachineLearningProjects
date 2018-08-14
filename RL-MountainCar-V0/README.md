@@ -8,7 +8,7 @@ The following files are related to the capstone project:
 
 Important Note: To visualize all the links embedded in **proposal.pdf** and **project_report.pdf** please download the files.
 
-Note: This files were created in Latex
+Note: Report files were created in Latex
 
 ### Dependencies
 To run This project all dependencies are listed in [requirements.txt](../RL-MountainCar-V0/requirements.txt). Further installation steps for OpenAI's Gym environment can be found [Here](https://gym.openai.com/docs/)
