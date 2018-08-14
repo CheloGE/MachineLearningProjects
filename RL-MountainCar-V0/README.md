@@ -10,3 +10,5 @@ Important Note: To visualize all the links embedded in **proposal.pdf** and **pr
 
 Note: This files were created in Latex
 
+### Dependencies
+To run This project all dependencies are listed in [requirements.txt](../RL-MountainCar-V0/requirements.txt). Further installation steps for OpenAI's Gym environment can be found [Here](https://gym.openai.com/docs/)
