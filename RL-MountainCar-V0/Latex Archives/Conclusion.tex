@@ -1,0 +1,16 @@
+% A visualization has been provided that emphasizes an important quality about the project with a thorough discussion. Visual cues are clearly defined.
+% Student adequately summarizes the end-to-end problem solution and discusses one or two particular aspects of the project they found interesting or difficult.
+This project has turned out to be more challenging than expected. The first problem to overcome was the lack of a GPU to work with the neural network which delayed the training process. Therefore, the work done in this project focused more on enhancing the speed of convergence of the algorithm rather than getting a better 100 reward average. The other main conflict faced in this project was the lack of states visited at the beginning of the training process, since the car tended to visit more the bottom of the mountain due to gravity pulling down the car, that was what delayed the training process the most. At the end, generating an additional custom reward of the environment plus skipping frames turned to be the key features to overcome these problems, where the approach was to build a Deep Q Learning model the more simplistic possible to solve the problem since a more complex model should lead to a better 100 average reward value but at the cost of more computational resources. Overall the project highlighted the importance of an optimal algorithm, where the goal was to learn more from less information of the environment (i.e. fewer episodes required). Finally, to visualize the outcome of the last 100 average reward training of the model a video was generated which can be seen \href{https://youtu.be/PxzqPLuuu5o}{Here}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Future Improvements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Discussion is made as to how one aspect of the implementation could be improved. Potential solutions resulting from these improvements are considered and compared/contrasted to the current solution.
+
+There is plenty of space to enhance the performance of this project. Some of the possible ideas are the following:
+\begin{itemize}
+\item Try training the model with a more complex deep neural network, perhaps one more hidden layer.
+\item Try a DDQN, the model created for this project already has implemented an option for a Double Deep Q Learning process. It will demand more computational resources but it must perform better, especially at the beginning of the training process.
+\item Try to implement prioritized memory since one of the main problems stated in the training process was the lack of new states to learn from, a prioritized memory should help overcome this issue since it will tend to select the new states or the states from which it will learn more.
+\item Try stacked states, the model created has already implemented the option to stack more states into the Deep Neural Network. This idea was brought from DeepMind's paper where four Atari frames were stacked into a single state to learn additional patterns and features from the environment. \cite{mnih2015humanlevel}
+\end{itemize}

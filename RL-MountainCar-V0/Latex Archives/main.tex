@@ -1,0 +1,77 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{nameref}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\title{Machine Learning Nanodegree  \linebreak Capstone Project}
+
+\author{Marcelo Roger García Escalante}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Definition}
+\input{Definition}
+
+% Project Overview
+% Problem Statement
+% Metrics
+
+\section{Analysis}
+\label{sec:analysis}
+\input{Analysis}
+ % Data Exploration 
+ % Exploratory Visualization
+ % Algorithms and Techniques
+ % Benchmark
+
+\section{Methodology}
+\input{Methodology}
+% Data Preprocessing
+% Implementation
+% Refinement
+
+\section{Results}
+\input{Results}
+% Model Evaluation and Validation
+% Justification
+
+\section{Conclusion}
+\input{Conclusion}
+% Free-Form Visualization
+% Reflection
+% Improvement
+
+
+\vspace*{1cm}
+\bibliographystyle{apalike}
+\bibliography{bibliography}
+\end{document}

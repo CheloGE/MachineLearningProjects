@@ -1,0 +1,91 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Data Preprocessing}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% All preprocessing steps have been clearly documented. Abnormalities or characteristics about the data or input that needed to be addressed have been corrected. If no data preprocessing is necessary, it has been clearly justified.
+As spotted out in subsection\nameref{sub:Exploratory}, an issue with the data (our state space) input for the deep neural network is that it is not normalized. This problem could shrink the speed of convergence of our model. Therefore, a pre-process of the data was required, where the input data was converted to a -1 to 1 range instead of the -1.2 to 0.6 for the position, and from -0.07 to 0.07 to -1 to 1 for the velocity. The process is illustrated in the following code snipped: 
+
+\begin{lstlisting}
+def normalize_data(self,state):
+      position = state[0][0] #getting position from state
+      velocity = state[0][1] #getting velocity from state
+      state[0][0] = (position + 0.3)/0.9
+      state[0][1] = (velocity)/0.07
+      return self.state
+\end{lstlisting}
+
+As we can note from the code snippet above, the position is added by 0.3 and divided by 0.9 in order to get a -1 to 1 range. On the other hand, the velocity is just divided by its maximum 0.07 value to get a -1 to 1 range as well.
+
+Another featured addressed in the pre-processing stage was the accumulation of previous states into a single one, this idea was borrowed again from \href{https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf}{DeepMind's paper}, where the idea was to stack more states into a single one to obtain additional patterns or relationships between states. The code snippet below shows how this is done.
+\begin{lstlisting}
+
+def stateProcessing(self,new_state):
+      #This function pre-processes and concatenates last observation with a stack of previous states
+      state_history=self.state
+      new_state=new_state.reshape(1,2)
+      new_state=self.normalize_data(new_state)
+      self.state=np.concatenate((state_history[1:],new_state),axis=0)
+      return self.state
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Implementation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The process for which metrics, algorithms, and techniques were implemented with the given datasets or input data has been thoroughly documented. Complications that occurred during the coding process are discussed.
+
+The process of implementation of the deep Q learning was built following the steps stated in the \nameref{sub:DQN} section with the following parameters introduced:
+\begin{itemize}
+\item \textbf{Number of episodes:} 4000
+\item \textbf{Maximum number of steps per episode:} 200 (limited by the environment)
+\item \textbf{Number of stacked states:} None
+\item \textbf{Number of episodes to update target model's weights:} 6
+\item \textbf{Replay memory structure type:} Deque
+\item \textbf{Memory size:} 5000
+\item \textbf{Mini-batch size for training:} 128
+\item \textbf{$\gamma$:} 0.99
+\item \textbf{Initial $\epsilon$:} 1.0
+\item \textbf{$\epsilon$ decay factor:} 0.99
+\item \textbf{Minimum $\epsilon$ value:} 0.01
+\item \textbf{Learning rate:} 0.005
+\item \textbf{Deep Q Network implemented:}
+    \begin{itemize}
+    \item \textbf{input shape} = (number of stacked states)+state space size
+    \item A fully connected \textbf{hidden layer} (Dense layer) with \textbf{200 nodes}.
+    \item \textbf{Uniform} initialization of weights 
+    \item \textbf{L2 regularizer} with a 0.01 weight
+    \item \textbf{Batch normalization} layer
+    \item \textbf{Relu} activation layer
+    \item \textbf{Output layer} with shape = action space size with a \textbf{linear} activation
+    \item \textbf{Loss function:} mean square error
+    \item \textbf{Optimizer: } Adam
+    \end{itemize}
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Refinement}
+\label{sub:Refinement}
+%%%%%%%%%%%%%%%%%%%%%%%
+% The process of improving upon the algorithms and techniques used is clearly documented. Both the initial and final solutions are reported, along with intermediate solutions, if necessary.
+
+After implementation of the Q learning algorithm the main problem faced was the long training required for first convergence in a solution. The problem was due to the configuration of the environment since the most visited states were at the bottom because of gravity pulling the car down. Therefore, a lot of the episodes were occupied just on the exploration stage, otherwise, the algorithm would not find a solution and if it founds it, it diverged again after a couple of episodes later. 
+
+\vspace{0.5cm}
+
+\textbf{1.} An alternative solution implemented to catalyze the convergence of the algorithm was to use a custom reward function, as shown in the following pseudo code:
+
+\begin{itemize}
+\item[] \textbf{IF} current position of the car = Goal position
+\item[] \quad \textbf{Reward} event
+\item[] \textbf{IF} current position of the car = Left edge of the environment
+\item[] \quad \textbf{Punish} event
+\item[] \textbf{IF} car ascending and velocity produced is contrary to the action. (E.g. action applied is right but the car goes left due to gravity)
+\item[] \quad \textbf{Punish} event
+\item[] \textbf{IF} car's speed is high and suddenly drops due to an action
+\item[] \quad \textbf{Punish} event
+\end{itemize}
+
+The result of this custom reward system was a significant increase in the speed of convergence of the algorithm from more than 1000 to 400 episodes.
+\linebreak
+
+\textbf{2.} Another important achievement in velocity of convergence was the implementation of a skipping frames system, which was inspired from the \href{https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf}{DeepMind's paper}, where they skipped frames to speed up the training process of the Atari images fed to its neural network. The skipped frames were set to 4, this means that the same action was applied to the next four states. The result was a huge 
+increase in the speed of convergence, that in conjunction with the custom reward system dropped the 400 episodes to 200 episodes.
